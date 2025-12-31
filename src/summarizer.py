@@ -4,21 +4,27 @@ import os
 
 class NewsSummarizer:
     def __init__(self):
+        self.api_key = os.environ.get('GOOGLE_API_KEY')
         self.project_id = os.environ.get('GOOGLE_CLOUD_PROJECT')
         self.location = "us-central1"
         
-        if not self.project_id:
-            print("Warning: GOOGLE_CLOUD_PROJECT environment variable is not set.")
-            self.client = None
-            return
-
         try:
-            self.client = genai.Client(
-                vertexai=True,
-                project=self.project_id,
-                location=self.location
-            )
-            self.model = "gemini-2.5-flash"
+            if self.api_key:
+                # API Keyがある場合はそちらを優先（GitHub Actionsなどで楽）
+                self.client = genai.Client(api_key=self.api_key)
+                self.model = "gemini-2.5-flash"
+            elif self.project_id:
+                # ローカルでgcloud auth loginしている場合など
+                self.client = genai.Client(
+                    vertexai=True,
+                    project=self.project_id,
+                    location=self.location
+                )
+                self.model = "gemini-2.5-flash"
+            else:
+                print("Warning: GOOGLE_API_KEY or GOOGLE_CLOUD_PROJECT is required.")
+                self.client = None
+                return
         except Exception as e:
             print(f"Error initializing GenAI Client: {e}")
             self.client = None
