@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from dateutil import parser
 import os
 import pytz
+import requests
 
 class GrantCollector:
     def __init__(self, config_path='grant_config.yaml'):
@@ -52,7 +53,10 @@ class GrantCollector:
         articles = []
         
         try:
-            feed = feedparser.parse(url)
+            # タイムアウトを設定してRSSフィードを取得
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+            feed = feedparser.parse(response.content)
             
             # フィード取得エラーのチェック
             if feed.get('bozo', False):
@@ -60,8 +64,14 @@ class GrantCollector:
                 # ボゾフラグがあっても、エントリーがあれば処理を続行
                 if not feed.entries:
                     return []
-        except Exception as e:
+        except requests.exceptions.Timeout:
+            print(f"Error: Timeout fetching RSS from {url} (exceeded 30 seconds)")
+            return []
+        except requests.exceptions.RequestException as e:
             print(f"Error fetching RSS from {url}: {e}")
+            return []
+        except Exception as e:
+            print(f"Error parsing RSS from {url}: {e}")
             return []
         
         # 基準日時を計算（現在時刻 - days_limit）
