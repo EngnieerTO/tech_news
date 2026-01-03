@@ -78,6 +78,48 @@ graph TD
 ### 3. 処理フロー
 
 #### 技術ニュース収集フロー
+
+```mermaid
+flowchart TD
+    Start([開始: Cloud Scheduler / GitHub Actions]) --> Init[NewsCollectorの初期化]
+    Init --> LoadConfig[config.yamlを読み込み]
+    LoadConfig --> FetchNews[RSSソースから記事を取得]
+    
+    FetchNews --> DateFilter{公開日チェック<br/>days_limit以内?}
+    DateFilter -->|Yes| KeywordFilter{キーワード<br/>マッチング}
+    DateFilter -->|No| Skip1[スキップ]
+    
+    KeywordFilter -->|マッチ| Collect[記事を収集]
+    KeywordFilter -->|不一致| Skip2[スキップ]
+    
+    Collect --> MoreSources{他のソースが<br/>ある？}
+    MoreSources -->|Yes| FetchNews
+    MoreSources -->|No| CheckArticles{収集した記事が<br/>ある？}
+    
+    CheckArticles -->|Yes| InitSummarizer[NewsSummarizerの初期化]
+    CheckArticles -->|No| NoArticles[処理終了]
+    
+    InitSummarizer --> SummarizeLoop[各記事をループ処理]
+    SummarizeLoop --> CallGemini[Gemini APIで要約生成]
+    CallGemini --> UpdateSummary[記事の要約を更新]
+    UpdateSummary --> MoreArticles{次の記事が<br/>ある？}
+    
+    MoreArticles -->|Yes| SummarizeLoop
+    MoreArticles -->|No| CreateEmail[HTMLメール本文を生成]
+    
+    CreateEmail --> SendEmail[Gmailで送信]
+    SendEmail --> End([完了])
+    
+    Skip1 --> MoreSources
+    Skip2 --> MoreSources
+    NoArticles --> End
+    
+    style Start fill:#e1f5e1
+    style End fill:#ffe1e1
+    style CallGemini fill:#fff4e1
+    style SendEmail fill:#e1f0ff
+```
+
 1. Cloud Scheduler が Cloud Functions をトリガー
 2. 指定されたソースからニュースを取得
 3. (オプション) LLM (Geminiなど) で要約・フィルタリング
@@ -85,6 +127,53 @@ graph TD
 5. メール本文を作成し送信
 
 #### 助成金情報収集フロー ✨ NEW
+
+```mermaid
+flowchart TD
+    Start([開始: GitHub Actions<br/>毎日8:00 AM]) --> Init[GrantCollectorの初期化]
+    Init --> LoadConfig[grant_config.yamlを読み込み]
+    LoadConfig --> FetchGrants[政府機関RSSから情報取得]
+    
+    FetchGrants --> ValidateFeed{RSSフィード<br/>正常？}
+    ValidateFeed -->|Yes| DateFilter{公開日チェック<br/>7日以内?}
+    ValidateFeed -->|No| LogError[エラーログ出力]
+    
+    DateFilter -->|Yes| KeywordFilter{キーワード<br/>マッチング<br/>中小企業/FoodTech等}
+    DateFilter -->|No| Skip1[スキップ]
+    
+    KeywordFilter -->|マッチ| Collect[助成金情報を収集]
+    KeywordFilter -->|不一致| Skip2[スキップ]
+    
+    Collect --> MoreSources{他のソースが<br/>ある？}
+    MoreSources -->|Yes| FetchGrants
+    MoreSources -->|No| CheckGrants{収集した情報が<br/>ある？}
+    
+    CheckGrants -->|Yes| InitSummarizer[NewsSummarizerの初期化]
+    CheckGrants -->|No| NoGrants[処理終了]
+    
+    InitSummarizer --> SummarizeLoop[各助成金情報をループ処理]
+    SummarizeLoop --> SaveOriginal[元の要約を保持]
+    SaveOriginal --> CallGemini[Gemini APIで<br/>事業者向け要約生成<br/>対象者/支援内容/期限]
+    CallGemini --> UpdateSummary[要約を更新]
+    UpdateSummary --> MoreGrants{次の情報が<br/>ある？}
+    
+    MoreGrants -->|Yes| SummarizeLoop
+    MoreGrants -->|No| CreateEmail[カテゴリ別<br/>HTMLメール本文生成]
+    
+    CreateEmail --> SendEmail[Gmailで送信]
+    SendEmail --> End([完了])
+    
+    Skip1 --> MoreSources
+    Skip2 --> MoreSources
+    LogError --> MoreSources
+    NoGrants --> End
+    
+    style Start fill:#e1f5e1
+    style End fill:#ffe1e1
+    style CallGemini fill:#fff4e1
+    style SendEmail fill:#e1f0ff
+```
+
 1. GitHub Actions が毎日8:00 AMに実行
 2. 政府機関・自治体のRSSフィードから助成金情報を収集
 3. キーワードでフィルタリング（中小企業、スタートアップ、フードテック等）
