@@ -1,0 +1,91 @@
+keywords:
+  # --- 中小企業 / SME ---
+  - "中小企業"
+  - "SME"
+  - "小規模事業者"
+  
+  # --- スタートアップ ---
+  - "スタートアップ"
+  - "Startup"
+  - "創業"
+  - "起業"
+  - "新規事業"
+  
+  # --- フードテック ---
+  - "フードテック"
+  - "Food Tech"
+  - "Foodtech"
+  - "食品"
+  - "農業"
+  - "AgriTech"
+  
+  # --- 食産業 ---
+  - "食産業"
+  - "食品産業"
+  - "飲食"
+  - "外食"
+  
+  # --- 食文化 ---
+  - "食文化"
+  - "伝統食"
+  - "地域食材"
+  
+  # --- 地域創生 ---
+  - "地域創生"
+  - "地方創生"
+  - "地域活性化"
+  - "まちづくり"
+  
+  # --- 助成金・補助金 ---
+  - "助成金"
+  - "補助金"
+  - "支援金"
+  - "交付金"
+  - "公募"
+
+# 過去何日分の記事を対象にするか（0なら制限なし）
+days_limit: 7
+
+sources:
+  # --- 中小企業庁 ---
+  - name: "中小企業庁"
+    type: "rss"
+    category: "中小企業・スタートアップ"
+    url: "https://www.chusho.meti.go.jp/rss/web.xml"
+  
+  # --- J-Net21 (中小機構) ---
+  - name: "J-Net21 (中小機構)"
+    type: "rss"
+    category: "中小企業・スタートアップ"
+    url: "https://j-net21.smrj.go.jp/rss/index.rdf"
+  
+  # --- 農林水産省 ---
+  - name: "農林水産省 新着情報"
+    type: "rss"
+    category: "フードテック・食産業"
+    url: "https://www.maff.go.jp/j/rss/index.rdf"
+  
+  # --- 経済産業省 関東経済産業局 ---
+  - name: "経済産業省 関東経済産業局"
+    type: "rss"
+    category: "フードテック・地域創生"
+    url: "https://www.kanto.meti.go.jp/rss/index.rdf"
+  
+  # --- 総務省 地域力創造グループ ---
+  - name: "総務省 地域力創造"
+    type: "rss"
+    category: "地域創生"
+    url: "https://www.soumu.go.jp/main_sosiki/jichi_gyousei/c-gyousei/rss/index.xml"
+  
+  # --- 内閣府 地方創生 ---
+  - name: "内閣府 地方創生推進事務局"
+    type: "rss"
+    category: "地域創生"
+    url: "https://www.chisou.go.jp/tiiki/index.rdf"
+
+email:
+  from_email: "t.oda.0705@gmail.com"
+  to_email: 
+    - "so.oda.0705@gmail.com"
+    - "Tomohito.Oda@sony.com"
+  subject_prefix: "[助成金情報]"

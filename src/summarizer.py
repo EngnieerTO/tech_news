@@ -54,3 +54,35 @@ Summary: {original_summary}
         except Exception as e:
             print(f"Error generating summary for '{title}': {e}")
             return original_summary
+
+    def summarize_grant(self, title, original_summary):
+        """助成金情報用の要約を生成"""
+        if not self.client:
+            return original_summary
+
+        prompt = f"""
+以下の助成金・補助金情報のタイトルと概要を読んで、事業者向けに日本語で要約してください。
+特に以下の点を含めてください：
+- 対象者（中小企業、スタートアップ、特定業界など）
+- 支援内容（金額や支援の種類）
+- 申請期限や重要な条件
+
+出力は3～5点の箇条書きのみにしてください。
+
+Title: {title}
+Summary: {original_summary}
+"""
+        
+        try:
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.2,
+                    max_output_tokens=1024,
+                )
+            )
+            return response.text.strip()
+        except Exception as e:
+            print(f"Error generating grant summary for '{title}': {e}")
+            return original_summary
