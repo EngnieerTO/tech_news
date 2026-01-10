@@ -112,9 +112,10 @@ Summary: {original_summary}
 これらすべての情報を踏まえて、**食産業やフードテック（食品関連技術、外食、農業など）に応用できそうな視点**で、全体を俯瞰した要約を作成してください。
 
 条件:
-- 文字数は日本語で400文字程度。
+- 文字数は日本語で800〜1000文字程度。
 - 単なる記事の羅列ではなく、どのようなトレンドがあり、それがどう食産業に活かせるか、あるいは影響を与えるかを考察してください。
 - 直接的に食品に関連しない技術（AI、ロボティクスなど）であっても、食品業界への応用可能性を見出して記述してください。
+- 洞察を深め、具体例や将来予測も交えて詳しく記述してください。
 
 Input Articles:
 {articles_text}
@@ -128,7 +129,7 @@ Output:
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     temperature=0.3,
-                    max_output_tokens=1024,
+                    max_output_tokens=4096,
                 )
             )
             return response.text.strip()
