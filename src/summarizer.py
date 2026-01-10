@@ -39,6 +39,11 @@ class NewsSummarizer:
 
 Title: {title}
 Summary: {original_summary}
+
+出力形式は以下です。これ以外は出力しないでください。
+* 箇条書き1
+* 箇条書き2
+* 箇条書き3
 """
         
         try:
