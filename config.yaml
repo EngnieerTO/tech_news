@@ -17,6 +17,17 @@ keywords:
   - "Food Tech"
   - "フードテック"
   - "AgriTech"
+  - "Smart Kitchen"
+  - "Kitchen Tech"
+  - "Smart Farming"
+  - "Alternative Protein"
+  - "Cultured Meat"
+  - "Plant-based"
+  - "スマートキッチン"
+  - "スマート農業"
+  - "代替タンパク"
+  - "培養肉"
+  - "プラントベース"
 
   # --- Smart City / Urban Dev ---
   - "Smart City"
@@ -126,6 +137,16 @@ sources:
     category: "Business"
     url: "https://jp.techcrunch.com/feed/"
 
+  - name: "TechCrunch (Global)"
+    type: "rss"
+    category: "Business"
+    url: "https://techcrunch.com/feed/"
+
+  - name: "VentureBeat"
+    type: "rss"
+    category: "Business"
+    url: "https://venturebeat.com/feed/"
+
   # --- Science & Technology ---
   - name: "Google News (Technology)"
     type: "rss"
@@ -136,6 +157,26 @@ sources:
     type: "rss"
     category: "Science & Tech"
     url: "https://www.technologyreview.com/feed/"
+
+  - name: "Medium (Technology)"
+    type: "rss"
+    category: "Science & Tech"
+    url: "https://medium.com/feed/tag/technology"
+
+  - name: "The Verge"
+    type: "rss"
+    category: "Science & Tech"
+    url: "https://www.theverge.com/rss/index.xml"
+
+  - name: "Wired"
+    type: "rss"
+    category: "Science & Tech"
+    url: "https://www.wired.com/feed/rss"
+
+  - name: "Ars Technica"
+    type: "rss"
+    category: "Science & Tech"
+    url: "https://arstechnica.com/feed/"
 
   # --- FoodTech ---
   - name: "The Spoon (FoodTech)"
@@ -165,7 +206,7 @@ sources:
 #    url: "https://hacker-news.firebaseio.com/v0/topstories.json"
 
 email:
-  from_email: "t.oda.0705@gmail.com"
+  from_email: "foodpj.ai.test@gmail.com"
   to_email: 
     - "so.oda.0705@gmail.com" # テスト用に書き換えてください
     - "Tomohito.Oda@sony.com"

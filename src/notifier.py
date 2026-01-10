@@ -76,7 +76,7 @@ class EmailNotifier:
         
         # カテゴリー順に表示（固定順序またはアルファベット順）
         # ここでは固定順序を定義してみる
-        category_order = ["Engineering", "Business", "Science & Tech", "FoodTech", "Uncategorized"]
+        category_order = ["Business", "Science & Tech", "FoodTech", "Engineering", "Uncategorized"]
         
         # 存在するカテゴリーだけを抽出してソート
         sorted_categories = [c for c in category_order if c in grouped_articles]
