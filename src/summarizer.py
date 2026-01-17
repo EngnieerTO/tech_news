@@ -160,13 +160,32 @@ Output:
             return None
     
     def parse_notable_articles(self, summary_text):
-        """注目記事のサマリーテキストをパースして構造化データに変換"""
+        """
+        注目記事のサマリーテキストをパースして構造化データに変換
+        
+        Args:
+            summary_text (str): Gemini APIからの構造化された出力テキスト
+        
+        Returns:
+            list[dict]: パースされた注目記事のリスト。各記事は以下のキーを含む:
+                - index (str, optional): 記事番号
+                - title (str): 記事タイトル
+                - url (str): 記事URL
+                - description (str): 食産業視点での解説（約150文字）
+        
+        Note:
+            - 日本語と英語のフィールド名の両方に対応
+            - 必須フィールド: title, url, description
+        """
         if not summary_text:
             return []
         
+        # 記事区切りを定数として定義
+        ARTICLE_DELIMITER = '===記事'
+        
         notable_articles = []
         # 記事ごとにセクションを分割
-        sections = summary_text.split('===記事')
+        sections = summary_text.split(ARTICLE_DELIMITER)
         
         for section in sections[1:]:  # 最初の空セクションをスキップ
             article_info = {}
