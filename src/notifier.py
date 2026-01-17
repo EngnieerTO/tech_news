@@ -4,6 +4,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 class EmailNotifier:
+    # タグのスタイル定義
+    TAG_STYLE = "background-color: #e3f2fd; color: #1976d2; padding: 2px 8px; border-radius: 3px; margin-right: 5px; font-size: 0.85em;"
+    # カテゴリーの表示順序
+    CATEGORY_ORDER = ["News", "Blog", "Events", "Uncategorized"]
+    
     def __init__(self, config):
         self.config = config
         # 環境変数からGmail設定を取得
@@ -92,7 +97,7 @@ class EmailNotifier:
         
         # カテゴリー順に表示（固定順序またはアルファベット順）
         # ここでは固定順序を定義してみる
-        category_order = ["News", "Blog", "Events", "Uncategorized"]
+        category_order = self.CATEGORY_ORDER
         
         # 存在するカテゴリーだけを抽出してソート
         sorted_categories = [c for c in category_order if c in grouped_articles]
@@ -112,7 +117,7 @@ class EmailNotifier:
                 
                 # タグを表示
                 if article.get('tags'):
-                    tags_html = " ".join([f"<span style='background-color: #e3f2fd; color: #1976d2; padding: 2px 8px; border-radius: 3px; margin-right: 5px; font-size: 0.85em;'>{tag}</span>" for tag in article['tags']])
+                    tags_html = " ".join([f"<span style='{self.TAG_STYLE}'>{tag}</span>" for tag in article['tags']])
                     html += f"<br/><div style='margin-top: 5px;'>{tags_html}</div>"
                 
                 if article.get('summary'):

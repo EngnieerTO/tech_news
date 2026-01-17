@@ -175,8 +175,8 @@ Summary: {summary}
             )
             tags_text = response.text.strip()
             
-            # "なし"の場合は空リストを返す
-            if tags_text in ["なし", "None", "N/A", ""]:
+            # "なし"の場合は空リストを返す（大文字小文字を区別しない）
+            if tags_text.lower() in ["なし", "none", "n/a", "該当なし", "無し"]:
                 return []
             
             # カンマ区切りでタグを分割し、前後の空白を削除
@@ -184,7 +184,17 @@ Summary: {summary}
             # 空文字を除外
             tags = [tag for tag in tags if tag]
             
-            return tags
+            # AIが幻覚でタグを作成していないか検証
+            # available_tagsリストに含まれるタグのみを返す
+            validated_tags = []
+            for tag in tags:
+                # 大文字小文字を区別せずに検索
+                for available_tag in available_tags:
+                    if tag.lower() == available_tag.lower():
+                        validated_tags.append(available_tag)  # 元のavailable_tagの表記を使用
+                        break
+            
+            return validated_tags
         except Exception as e:
             print(f"Error generating tags for '{title}': {e}")
             return []
