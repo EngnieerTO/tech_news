@@ -100,25 +100,44 @@ Summary: {original_summary}
             return original_summary
 
     def generate_overall_summary(self, articles):
-        """全記事の情報を元に、食産業・フードテックへの応用視点で全体サマリーを生成"""
+        """全記事の情報を元に、食産業・フードテックへの応用視点で注目記事を3つ選定"""
         if not self.client or not articles:
             return None
 
-        # 記事情報をテキストにまとめる
+        # 記事情報をテキストにまとめる（URLも含める）
         articles_text = ""
-        for article in articles:
-            articles_text += f"- Title: {article['title']}\n"
-            articles_text += f"  Summary: {article.get('summary', 'No summary provided')}\n\n"
+        for idx, article in enumerate(articles):
+            articles_text += f"{idx + 1}. Title: {article['title']}\n"
+            articles_text += f"   URL: {article['url']}\n"
+            articles_text += f"   Summary: {article.get('summary', 'No summary provided')}\n\n"
 
         prompt = f"""
 以下は本日収集された複数のテックニュース記事のタイトルと要約です。
-これらすべての情報を踏まえて、**食産業やフードテック（食品関連技術、外食、農業など）に応用できそうな視点**で、全体を俯瞰した要約を作成してください。
+これらすべての記事の中から、食産業やフードテックの視点で注目の記事を3つピックアップしてください。
 
 条件:
-- 文字数は日本語で400〜500文字程度。
-- 単なる記事の羅列ではなく、どのようなトレンドがあり、それがどう食産業に活かせるか、あるいは影響を与えるかを考察してください。
-- 直接的に食品に関連しない技術（AI、ロボティクスなど）であっても、食品業界への応用可能性を見出して記述してください。
-- 洞察を深め、具体例や将来予測も交えて詳しく記述してください。
+- 記事番号、タイトル、URL、そして食産業での活用事例を挙げながら、各150文字程度で解説してください。
+- 直接的に食品に関連しない技術（AI、ロボティクス、センサー技術など）であっても、食品業界への応用可能性を具体的に見出して記述してください。
+- 各記事の解説では、具体的な活用事例や応用シーンを含めてください。
+
+出力形式:
+===記事1===
+番号: [記事番号]
+タイトル: [記事のタイトル]
+URL: [記事のURL]
+解説: [150文字程度の解説。食産業での活用事例を含む]
+
+===記事2===
+番号: [記事番号]
+タイトル: [記事のタイトル]
+URL: [記事のURL]
+解説: [150文字程度の解説。食産業での活用事例を含む]
+
+===記事3===
+番号: [記事番号]
+タイトル: [記事のタイトル]
+URL: [記事のURL]
+解説: [150文字程度の解説。食産業での活用事例を含む]
 
 Input Articles:
 {articles_text}
@@ -139,6 +158,35 @@ Output:
         except Exception as e:
             print(f"Error generating overall summary: {e}")
             return None
+    
+    def parse_notable_articles(self, summary_text):
+        """注目記事のサマリーテキストをパースして構造化データに変換"""
+        if not summary_text:
+            return []
+        
+        notable_articles = []
+        # 記事ごとにセクションを分割
+        sections = summary_text.split('===記事')
+        
+        for section in sections[1:]:  # 最初の空セクションをスキップ
+            article_info = {}
+            lines = section.strip().split('\n')
+            
+            for line in lines:
+                line = line.strip()
+                if line.startswith('番号:'):
+                    article_info['index'] = line.replace('番号:', '').strip()
+                elif line.startswith('タイトル:'):
+                    article_info['title'] = line.replace('タイトル:', '').strip()
+                elif line.startswith('URL:'):
+                    article_info['url'] = line.replace('URL:', '').strip()
+                elif line.startswith('解説:'):
+                    article_info['description'] = line.replace('解説:', '').strip()
+            
+            if article_info.get('title') and article_info.get('url') and article_info.get('description'):
+                notable_articles.append(article_info)
+        
+        return notable_articles
 
     def generate_tags(self, title, summary, available_tags):
         """記事のタイトルと要約から関連タグを生成"""
