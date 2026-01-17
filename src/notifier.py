@@ -116,8 +116,7 @@ class EmailNotifier:
             
             html_content += "</div>"
         
-        # カテゴリー順に表示（固定順序またはアルファベット順）
-        # ここでは固定順序を定義してみる
+        # カテゴリー順に表示（固定順序）
         category_order = self.CATEGORY_ORDER
         
         # 存在するカテゴリーだけを抽出してソート

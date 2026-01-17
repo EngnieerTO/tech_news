@@ -174,15 +174,20 @@ Output:
             
             for line in lines:
                 line = line.strip()
-                if line.startswith('番号:'):
-                    article_info['index'] = line.replace('番号:', '').strip()
-                elif line.startswith('タイトル:'):
-                    article_info['title'] = line.replace('タイトル:', '').strip()
+                # 番号 (optional field)
+                if line.startswith('番号:') or line.startswith('Index:'):
+                    article_info['index'] = line.split(':', 1)[1].strip()
+                # タイトル (required)
+                elif line.startswith('タイトル:') or line.startswith('Title:'):
+                    article_info['title'] = line.split(':', 1)[1].strip()
+                # URL (required)
                 elif line.startswith('URL:'):
-                    article_info['url'] = line.replace('URL:', '').strip()
-                elif line.startswith('解説:'):
-                    article_info['description'] = line.replace('解説:', '').strip()
+                    article_info['url'] = line.split(':', 1)[1].strip()
+                # 解説 (required)
+                elif line.startswith('解説:') or line.startswith('Description:'):
+                    article_info['description'] = line.split(':', 1)[1].strip()
             
+            # Validate that all required fields are present
             if article_info.get('title') and article_info.get('url') and article_info.get('description'):
                 notable_articles.append(article_info)
         
