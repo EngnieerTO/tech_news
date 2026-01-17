@@ -136,3 +136,54 @@ Output:
         except Exception as e:
             print(f"Error generating overall summary: {e}")
             return None
+
+    def generate_tags(self, title, summary, available_tags):
+        """記事のタイトルと要約から関連タグを生成"""
+        if not self.client or not available_tags:
+            return []
+
+        # タグリストを文字列にする
+        tags_list = ", ".join(available_tags)
+
+        prompt = f"""
+以下の技術記事のタイトルと要約を読んで、関連するタグを選択してください。
+
+Title: {title}
+Summary: {summary}
+
+利用可能なタグ: {tags_list}
+
+条件:
+- 上記のタグリストから最大3つまで選択してください
+- 記事の内容に最も関連性の高いタグを選んでください
+- タグは日本語と英語の両方が含まれていますが、どちらを選んでも構いません
+- タグはカンマ区切りで出力してください（例: AI, セキュリティ, ロボティクス）
+- タグが1つも該当しない場合は「なし」と出力してください
+
+出力（タグのみ、他の文言は不要）:
+"""
+        
+        try:
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.1,
+                    max_output_tokens=256,
+                )
+            )
+            tags_text = response.text.strip()
+            
+            # "なし"の場合は空リストを返す
+            if tags_text in ["なし", "None", "N/A", ""]:
+                return []
+            
+            # カンマ区切りでタグを分割し、前後の空白を削除
+            tags = [tag.strip() for tag in tags_text.split(',')]
+            # 空文字を除外
+            tags = [tag for tag in tags if tag]
+            
+            return tags
+        except Exception as e:
+            print(f"Error generating tags for '{title}': {e}")
+            return []

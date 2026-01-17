@@ -65,6 +65,8 @@ class EmailNotifier:
         for article in articles:
             lines.append(f"- {article['title']}")
             lines.append(f"  {article['url']}")
+            if article.get('tags'):
+                lines.append(f"  Tags: {', '.join(article['tags'])}")
             lines.append("")
         return "\n".join(lines)
 
@@ -90,7 +92,7 @@ class EmailNotifier:
         
         # カテゴリー順に表示（固定順序またはアルファベット順）
         # ここでは固定順序を定義してみる
-        category_order = ["Business", "Science & Tech", "FoodTech", "Engineering", "Uncategorized"]
+        category_order = ["News", "Blog", "Events", "Uncategorized"]
         
         # 存在するカテゴリーだけを抽出してソート
         sorted_categories = [c for c in category_order if c in grouped_articles]
@@ -107,6 +109,11 @@ class EmailNotifier:
                 html += f"<li style='margin-bottom: 15px;'>"
                 html += f"<strong><a href='{article['url']}'>{article['title']}</a></strong>"
                 html += f"<br/><small style='color: #666;'>Source: {article['source']} | Keyword: {article.get('matched_keyword', 'N/A')}</small>"
+                
+                # タグを表示
+                if article.get('tags'):
+                    tags_html = " ".join([f"<span style='background-color: #e3f2fd; color: #1976d2; padding: 2px 8px; border-radius: 3px; margin-right: 5px; font-size: 0.85em;'>{tag}</span>" for tag in article['tags']])
+                    html += f"<br/><div style='margin-top: 5px;'>{tags_html}</div>"
                 
                 if article.get('summary'):
                     # 改行を<br>に変換して表示（文字数制限なし）

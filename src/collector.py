@@ -106,3 +106,20 @@ class NewsCollector:
                     break
         
         return filtered
+
+    def get_tag_categories(self):
+        """キーワードリストから主要なタグカテゴリを抽出する"""
+        # コメントから推測されるカテゴリーを返す
+        # キーワードリストのコメントに基づいて主要カテゴリを定義
+        tag_categories = [
+            "AI", "Artificial Intelligence", "Generative AI", "LLM",
+            "Robotics", "Robot", "ロボット",
+            "Foodtech", "Food Tech", "フードテック", "AgriTech", "Smart Kitchen", "Smart Farming",
+            "Smart City", "Urban Development", "スマートシティ", "PropTech",
+            "Security", "Cyber Security", "セキュリティ", "サイバーセキュリティ",
+            "Sensing", "Depth", "深度", "Temperature", "温度", "SWIR", "近赤外",
+            "Cloud", "Google Cloud Platform",
+            "Business", "ビジネス"
+        ]
+        
+        return tag_categories
