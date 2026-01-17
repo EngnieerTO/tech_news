@@ -19,7 +19,7 @@ class EmailNotifier:
         if not self.gmail_user or not self.gmail_password:
             print("Warning: GMAIL_USER or GMAIL_APP_PASSWORD environment variable is not set.")
 
-    def send_daily_summary(self, articles, overall_summary=None):
+    def send_daily_summary(self, articles, notable_articles=None):
         """収集した記事リストをメールで送信する"""
         if not articles:
             print("No articles to send.")
@@ -27,7 +27,7 @@ class EmailNotifier:
 
         if not self.gmail_user or not self.gmail_password:
             print("Skipping email send (No Credentials). Printing content instead.")
-            print(self._generate_email_body(articles, overall_summary))
+            print(self._generate_email_body(articles, notable_articles))
             return
 
         # メールの作成
@@ -43,8 +43,8 @@ class EmailNotifier:
             msg['To'] = to_emails
 
         # 本文の作成（テキスト版とHTML版）
-        text_body = self._generate_email_body(articles, overall_summary)
-        html_body = self._generate_html_body(articles, overall_summary)
+        text_body = self._generate_email_body(articles, notable_articles)
+        html_body = self._generate_html_body(articles, notable_articles)
 
         msg.attach(MIMEText(text_body, 'plain'))
         msg.attach(MIMEText(html_body, 'html'))
@@ -59,13 +59,16 @@ class EmailNotifier:
         except Exception as e:
             print(f"Error sending email: {e}")
 
-    def _generate_email_body(self, articles, overall_summary=None):
+    def _generate_email_body(self, articles, notable_articles=None):
         """テキスト形式のメール本文（デバッグ用）"""
         lines = ["Here is your daily tech news summary:\n"]
         
-        if overall_summary:
-            lines.append("=== FoodTech Perspective Summary ===")
-            lines.append(overall_summary)
+        if notable_articles:
+            lines.append("=== 本日の注目記事 (Today's Notable Articles) ===")
+            for i, article in enumerate(notable_articles, 1):
+                lines.append(f"\n{i}. {article.get('title', 'N/A')}")
+                lines.append(f"   {article.get('url', 'N/A')}")
+                lines.append(f"   {article.get('description', 'N/A')}")
             lines.append("====================================\n")
 
         for article in articles:
@@ -76,7 +79,7 @@ class EmailNotifier:
             lines.append("")
         return "\n".join(lines)
 
-    def _generate_html_body(self, articles, overall_summary=None):
+    def _generate_html_body(self, articles, notable_articles=None):
         """HTML形式のメール本文（カテゴリー分け対応）"""
         # カテゴリーごとにグループ化
         grouped_articles = {}
@@ -88,17 +91,32 @@ class EmailNotifier:
 
         html_content = "<h2>Daily Summary</h2>"
         
-        if overall_summary:
-            overall_summary_escaped = html.escape(overall_summary)
-            html_content += f"""
-            <div style="background-color: #e8daef; padding: 15px; margin-bottom: 20px; border-left: 5px solid #8e44ad; border-radius: 4px;">
-                <h3 style="margin-top: 0; color: #8e44ad;">Today's FoodTech Perspective</h3>
-                <p style="white-space: pre-wrap;">{overall_summary_escaped}</p>
-            </div>
+        # 注目記事セクション
+        if notable_articles:
+            html_content += """
+            <div style="background-color: #fff3e0; padding: 20px; margin-bottom: 25px; border-left: 5px solid #ff9800; border-radius: 4px;">
+                <h3 style="margin-top: 0; color: #e65100;">📌 本日の注目記事 (Today's Notable Articles)</h3>
+                <p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">食産業・フードテックの視点で選出</p>
             """
+            
+            for i, article in enumerate(notable_articles, 1):
+                title_escaped = html.escape(article.get('title', 'N/A'))
+                url_escaped = html.escape(article.get('url', 'N/A'))
+                description_escaped = html.escape(article.get('description', 'N/A'))
+                
+                html_content += f"""
+                <div style="margin-bottom: 20px; padding: 15px; background-color: white; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h4 style="margin: 0 0 10px 0; color: #ff9800;">
+                        <span style="background-color: #ff9800; color: white; padding: 3px 8px; border-radius: 3px; margin-right: 8px; font-size: 0.9em;">{i}</span>
+                        <a href='{url_escaped}' style="color: #e65100; text-decoration: none;">{title_escaped}</a>
+                    </h4>
+                    <p style="margin: 0; color: #333; line-height: 1.6;">{description_escaped}</p>
+                </div>
+                """
+            
+            html_content += "</div>"
         
-        # カテゴリー順に表示（固定順序またはアルファベット順）
-        # ここでは固定順序を定義してみる
+        # カテゴリー順に表示（固定順序）
         category_order = self.CATEGORY_ORDER
         
         # 存在するカテゴリーだけを抽出してソート
