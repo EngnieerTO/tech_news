@@ -23,10 +23,19 @@ def main():
     if articles:
         print("\nAI要約を開始します...")
         summarizer = NewsSummarizer()
+        
+        # タグカテゴリを取得
+        available_tags = collector.get_tag_categories()
+        
         for i, article in enumerate(articles, 1):
             print(f"[{i}/{len(articles)}] Summarizing: {article['title']}...")
             ai_summary = summarizer.summarize(article['title'], article['summary'])
             article['summary'] = ai_summary # 要約を上書き
+            
+            # タグ生成
+            print(f"[{i}/{len(articles)}] Generating tags: {article['title']}...")
+            tags = summarizer.generate_tags(article['title'], ai_summary, available_tags)
+            article['tags'] = tags
         
         print("\n全体サマリー(食産業応用視点)を生成中...")
         overall_summary = summarizer.generate_overall_summary(articles)

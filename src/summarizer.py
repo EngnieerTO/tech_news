@@ -3,6 +3,9 @@ from google.genai import types
 import os
 
 class NewsSummarizer:
+    # タグがない場合のAI応答のパターン
+    NO_TAG_RESPONSES = ["なし", "none", "n/a", "該当なし", "無し"]
+    
     def __init__(self):
         self.api_key = os.environ.get('GOOGLE_API_KEY')
         self.project_id = os.environ.get('GOOGLE_CLOUD_PROJECT')
@@ -136,3 +139,65 @@ Output:
         except Exception as e:
             print(f"Error generating overall summary: {e}")
             return None
+
+    def generate_tags(self, title, summary, available_tags):
+        """記事のタイトルと要約から関連タグを生成"""
+        if not self.client or not available_tags:
+            return []
+
+        # タグリストを文字列にする
+        tags_list = ", ".join(available_tags)
+
+        prompt = f"""
+以下の技術記事のタイトルと要約を読んで、関連するタグを選択してください。
+
+Title: {title}
+Summary: {summary}
+
+利用可能なタグ: {tags_list}
+
+条件:
+- 上記のタグリストから最大3つまで選択してください
+- 記事の内容に最も関連性の高いタグを選んでください
+- 同じ概念を表す英語と日本語のタグがある場合は、どちらか一方のみを選んでください（例: "AI"と"人工知能"の両方は選ばない）
+- より一般的・認知度の高い表現を優先してください
+- タグはカンマ区切りで出力してください（例: AI, セキュリティ, Robotics）
+- タグが1つも該当しない場合は「なし」と出力してください
+
+出力（タグのみ、他の文言は不要）:
+"""
+        
+        try:
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.1,
+                    max_output_tokens=256,
+                )
+            )
+            tags_text = response.text.strip()
+            
+            # "なし"の場合は空リストを返す（大文字小文字を区別しない）
+            if tags_text.lower() in self.NO_TAG_RESPONSES:
+                return []
+            
+            # カンマ区切りでタグを分割し、前後の空白を削除
+            tags = [tag.strip() for tag in tags_text.split(',')]
+            # 空文字を除外
+            tags = [tag for tag in tags if tag]
+            
+            # AIが幻覚でタグを作成していないか検証
+            # available_tagsリストに含まれるタグのみを返す
+            validated_tags = []
+            for tag in tags:
+                # 大文字小文字を区別せずに検索
+                for available_tag in available_tags:
+                    if tag.lower() == available_tag.lower():
+                        validated_tags.append(available_tag)  # 元のavailable_tagの表記を使用
+                        break
+            
+            return validated_tags
+        except Exception as e:
+            print(f"Error generating tags for '{title}': {e}")
+            return []

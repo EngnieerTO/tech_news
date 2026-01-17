@@ -106,3 +106,9 @@ class NewsCollector:
                     break
         
         return filtered
+
+    def get_tag_categories(self):
+        """キーワードリストから主要なタグカテゴリを抽出する"""
+        # config.yamlのキーワードをそのまま返す
+        # これにより、キーワード設定と同期が保たれる
+        return self.keywords if self.keywords else []

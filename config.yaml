@@ -83,111 +83,107 @@ keywords:
 days_limit: 1
 
 sources:
-  # --- Engineering ---
+  # --- Blog (ブログ) ---
   - name: "Qiita Trend"
     type: "rss"
-    category: "Engineering"
+    category: "Blog"
     url: "https://qiita.com/popular-items/feed"
   
   - name: "Zenn Trend"
     type: "rss"
-    category: "Engineering"
+    category: "Blog"
     url: "https://zenn.dev/feed"
 
   - name: "Publickey"
     type: "rss"
-    category: "Engineering"
+    category: "Blog"
     url: "https://www.publickey1.jp/atom.xml"
 
   - name: "DevelopersIO"
     type: "rss"
-    category: "Engineering"
+    category: "Blog"
     url: "https://dev.classmethod.jp/feed/"
 
-  # --- Business / Startups ---
   - name: "The Bridge"
     type: "rss"
-    category: "Business"
+    category: "Blog"
     url: "https://thebridge.jp/feed"
-
-  - name: "ITmedia ビジネスオンライン"
-    type: "rss"
-    category: "Business"
-    url: "https://rss.itmedia.co.jp/rss/2.0/business.xml"
-
-  - name: "Nikkei Business"
-    type: "rss"
-    category: "Business"
-    url: "https://business.nikkei.com/rss/sns/nb.rdf"
-
-  - name: "Nikkei XTREND"
-    type: "rss"
-    category: "Business"
-    url: "https://xtrend.nikkei.com/rss/index.rdf"
-
-  - name: "Gartner Newsroom"
-    type: "rss"
-    category: "Business"
-    url: "https://www.gartner.com/en/newsroom/rss"
-
-  # 月刊事業構想 (Project Design) はRSSフィードがないため未追加
 
   - name: "TechCrunch Japan"
     type: "rss"
-    category: "Business"
+    category: "Blog"
     url: "https://jp.techcrunch.com/feed/"
 
   - name: "TechCrunch (Global)"
     type: "rss"
-    category: "Business"
+    category: "Blog"
     url: "https://techcrunch.com/feed/"
 
   - name: "VentureBeat"
     type: "rss"
-    category: "Business"
+    category: "Blog"
     url: "https://venturebeat.com/feed/"
-
-  # --- Science & Technology ---
-  - name: "Google News (Technology)"
-    type: "rss"
-    category: "Science & Tech"
-    url: "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWvfQ0wyZ0tSMjF0WVMxemVHVXRiSE55S2d8UQA?hl=ja&gl=JP&ceid=JP:ja"
-
-  - name: "MIT Technology Review"
-    type: "rss"
-    category: "Science & Tech"
-    url: "https://www.technologyreview.com/feed/"
 
   - name: "Medium (Technology)"
     type: "rss"
-    category: "Science & Tech"
+    category: "Blog"
     url: "https://medium.com/feed/tag/technology"
 
-  - name: "The Verge"
-    type: "rss"
-    category: "Science & Tech"
-    url: "https://www.theverge.com/rss/index.xml"
-
-  - name: "Wired"
-    type: "rss"
-    category: "Science & Tech"
-    url: "https://www.wired.com/feed/rss"
-
-  - name: "Ars Technica"
-    type: "rss"
-    category: "Science & Tech"
-    url: "https://arstechnica.com/feed/"
-
-  # --- FoodTech ---
   - name: "The Spoon (FoodTech)"
     type: "rss"
-    category: "FoodTech"
+    category: "Blog"
     url: "https://thespoon.tech/feed/"
 
   - name: "TechCrunch (Food)"
     type: "rss"
-    category: "FoodTech"
+    category: "Blog"
     url: "https://techcrunch.com/category/food/feed/"
+
+  # --- News (ニュース) ---
+  - name: "ITmedia ビジネスオンライン"
+    type: "rss"
+    category: "News"
+    url: "https://rss.itmedia.co.jp/rss/2.0/business.xml"
+
+  - name: "Nikkei Business"
+    type: "rss"
+    category: "News"
+    url: "https://business.nikkei.com/rss/sns/nb.rdf"
+
+  - name: "Nikkei XTREND"
+    type: "rss"
+    category: "News"
+    url: "https://xtrend.nikkei.com/rss/index.rdf"
+
+  - name: "Gartner Newsroom"
+    type: "rss"
+    category: "News"
+    url: "https://www.gartner.com/en/newsroom/rss"
+
+  - name: "Google News (Technology)"
+    type: "rss"
+    category: "News"
+    url: "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWvfQ0wyZ0tSMjF0WVMxemVHVXRiSE55S2d8UQA?hl=ja&gl=JP&ceid=JP:ja"
+
+  - name: "MIT Technology Review"
+    type: "rss"
+    category: "News"
+    url: "https://www.technologyreview.com/feed/"
+
+  - name: "The Verge"
+    type: "rss"
+    category: "News"
+    url: "https://www.theverge.com/rss/index.xml"
+
+  - name: "Wired"
+    type: "rss"
+    category: "News"
+    url: "https://www.wired.com/feed/rss"
+
+  - name: "Ars Technica"
+    type: "rss"
+    category: "News"
+    url: "https://arstechnica.com/feed/"
 
   # --- Events ---
   - name: "TechPlay"
