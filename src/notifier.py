@@ -2,6 +2,7 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import html
 
 class EmailNotifier:
     # タグのスタイル定義
@@ -85,13 +86,14 @@ class EmailNotifier:
                 grouped_articles[cat] = []
             grouped_articles[cat].append(article)
 
-        html = "<h2>Daily Summary</h2>"
+        html_content = "<h2>Daily Summary</h2>"
         
         if overall_summary:
-            html += f"""
+            overall_summary_escaped = html.escape(overall_summary)
+            html_content += f"""
             <div style="background-color: #e8daef; padding: 15px; margin-bottom: 20px; border-left: 5px solid #8e44ad; border-radius: 4px;">
                 <h3 style="margin-top: 0; color: #8e44ad;">Today's FoodTech Perspective</h3>
-                <p style="white-space: pre-wrap;">{overall_summary}</p>
+                <p style="white-space: pre-wrap;">{overall_summary_escaped}</p>
             </div>
             """
         
@@ -108,23 +110,32 @@ class EmailNotifier:
 
         for category in sorted_categories:
             articles_in_cat = grouped_articles[category]
-            html += f"<h3 style='background-color: #f0f0f0; padding: 5px;'>{category} ({len(articles_in_cat)})</h3><ul>"
+            category_escaped = html.escape(category)
+            html_content += f"<h3 style='background-color: #f0f0f0; padding: 5px;'>{category_escaped} ({len(articles_in_cat)})</h3><ul>"
             
             for article in articles_in_cat:
-                html += f"<li style='margin-bottom: 15px;'>"
-                html += f"<strong><a href='{article['url']}'>{article['title']}</a></strong>"
-                html += f"<br/><small style='color: #666;'>Source: {article['source']} | Keyword: {article.get('matched_keyword', 'N/A')}</small>"
+                html_escaped_title = html.escape(article['title'])
+                html_escaped_url = html.escape(article['url'])
+                html_escaped_source = html.escape(article['source'])
+                html_escaped_keyword = html.escape(article.get('matched_keyword', 'N/A'))
                 
-                # タグを表示
+                html_content += f"<li style='margin-bottom: 15px;'>"
+                html_content += f"<strong><a href='{html_escaped_url}'>{html_escaped_title}</a></strong>"
+                html_content += f"<br/><small style='color: #666;'>Source: {html_escaped_source} | Keyword: {html_escaped_keyword}</small>"
+                
+                # タグを表示（HTML エスケープして XSS を防止）
                 if article.get('tags'):
-                    tags_html = " ".join([f"<span style='{self.TAG_STYLE}'>{tag}</span>" for tag in article['tags']])
-                    html += f"<br/><div style='margin-top: 5px;'>{tags_html}</div>"
+                    tags_html = " ".join([f"<span style='{self.TAG_STYLE}'>{html.escape(tag)}</span>" for tag in article['tags']])
+                    html_output = f"<br/><div style='margin-top: 5px;'>{tags_html}</div>"
+                    html_content += html_output
                 
                 if article.get('summary'):
-                    # 改行を<br>に変換して表示（文字数制限なし）
-                    summary_html = article['summary'].replace('\n', '<br/>')
-                    html += f"<p style='margin-top: 5px;'>{summary_html}</p>"
-                html += "</li>"
-            html += "</ul>"
+                    # HTMLエスケープしてから改行を<br>に変換
+                    summary_escaped = html.escape(article['summary'])
+                    summary_html = summary_escaped.replace('\n', '<br/>')
+                    html_output = f"<p style='margin-top: 5px;'>{summary_html}</p>"
+                    html_content += html_output
+                html_content += "</li>"
+            html_content += "</ul>"
             
-        return html
+        return html_content

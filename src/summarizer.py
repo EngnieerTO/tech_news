@@ -3,6 +3,9 @@ from google.genai import types
 import os
 
 class NewsSummarizer:
+    # タグがない場合のAI応答のパターン
+    NO_TAG_RESPONSES = ["なし", "none", "n/a", "該当なし", "無し"]
+    
     def __init__(self):
         self.api_key = os.environ.get('GOOGLE_API_KEY')
         self.project_id = os.environ.get('GOOGLE_CLOUD_PROJECT')
@@ -176,7 +179,7 @@ Summary: {summary}
             tags_text = response.text.strip()
             
             # "なし"の場合は空リストを返す（大文字小文字を区別しない）
-            if tags_text.lower() in ["なし", "none", "n/a", "該当なし", "無し"]:
+            if tags_text.lower() in self.NO_TAG_RESPONSES:
                 return []
             
             # カンマ区切りでタグを分割し、前後の空白を削除
