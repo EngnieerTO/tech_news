@@ -7,6 +7,10 @@ import html
 class EmailNotifier:
     # タグのスタイル定義
     TAG_STYLE = "background-color: #e3f2fd; color: #1976d2; padding: 2px 8px; border-radius: 3px; margin-right: 5px; font-size: 0.85em;"
+    # 食産業タグのスタイル定義（緑色）
+    FOOD_INDUSTRY_TAG_STYLE = "background-color: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 3px; margin-right: 5px; font-size: 0.85em;"
+    # 食産業タグのリスト
+    FOOD_INDUSTRY_TAGS = {"飲食", "農業", "漁業", "食品工場", "フードテック"}
     # カテゴリーの表示順序
     CATEGORY_ORDER = ["News", "Blog", "Events", "Uncategorized"]
     
@@ -143,7 +147,11 @@ class EmailNotifier:
                 
                 # タグを表示（HTML エスケープして XSS を防止）
                 if article.get('tags'):
-                    tags_html = " ".join([f"<span style='{self.TAG_STYLE}'>{html.escape(tag)}</span>" for tag in article['tags']])
+                    # 食産業タグは緑色、その他は青色で表示
+                    tags_html = " ".join([
+                        f"<span style='{self.FOOD_INDUSTRY_TAG_STYLE if tag in self.FOOD_INDUSTRY_TAGS else self.TAG_STYLE}'>{html.escape(tag)}</span>" 
+                        for tag in article['tags']
+                    ])
                     html_output = f"<br/><div style='margin-top: 5px;'>{tags_html}</div>"
                     html_content += html_output
                 
