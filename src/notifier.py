@@ -60,8 +60,12 @@ class EmailNotifier:
             server.send_message(msg)
             server.quit()
             print(f"Email sent successfully to {self.config['email']['to_email']}!")
+        except smtplib.SMTPAuthenticationError as e:
+            print(f"Error sending email: Authentication failed. Please regenerate the Gmail App Password and update the GMAIL_APP_PASSWORD secret. Details: {e}")
+            raise
         except Exception as e:
             print(f"Error sending email: {e}")
+            raise
 
     def _generate_email_body(self, articles, notable_articles=None):
         """テキスト形式のメール本文（デバッグ用）"""
