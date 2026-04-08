@@ -198,6 +198,26 @@ flowchart TD
 
 設定は `grant_config.yaml` で管理されています。
 
+## トラブルシューティング
+
+### メールが届かない / GitHub Actionsでメール送信エラーが発生する
+
+**症状**: GitHub Actionsのログに以下のようなエラーが表示される場合：
+```
+Error sending email: Authentication failed. Please regenerate the Gmail App Password...
+```
+または
+```
+(535, b'5.7.8 Username and Password not accepted...')
+```
+
+**原因**: Gmailのアプリパスワード（`GMAIL_APP_PASSWORD`）が無効化されています。Googleアカウントのパスワード変更や2段階認証の変更があった場合、既存のアプリパスワードは自動的に失効します。
+
+**解決方法**:
+1. Googleアカウントで新しいアプリパスワードを生成してください（[Gmailアプリパスワードの取得方法](#gmailアプリパスワードの取得方法)を参照）
+2. GitHubリポジトリの **Settings → Secrets and variables → Actions** を開く
+3. `GMAIL_APP_PASSWORD` のシークレットを新しいアプリパスワードに更新する
+
 ## 検討事項
 - ニュースソースはどこにするか？
 - AIによる要約は必要か？
