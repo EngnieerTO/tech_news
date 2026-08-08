@@ -239,5 +239,6 @@ email:
   to_email: 
     - "so.oda.0705@gmail.com" # テスト用に書き換えてください
     - "Tomohito.Oda@sony.com"
+    - "Tomohito.Oda@ajiwow.co.jp"
     # - "another@example.com"
   subject_prefix: "[Tech News]"
