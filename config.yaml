@@ -272,6 +272,11 @@ sources:
     category: "News"
     url: "https://rss.itmedia.co.jp/rss/2.0/business.xml"
 
+  - name: "ITmedia NEWS"
+    type: "rss"
+    category: "News"
+    url: "https://rss.itmedia.co.jp/rss/2.0/news.xml"
+
   - name: "農林水産省 新着情報"
     type: "rss"
     category: "News"
